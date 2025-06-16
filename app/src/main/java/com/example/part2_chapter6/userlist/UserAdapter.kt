@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.part2_chapter6.databinding.ItemUserBinding
 
-class UserAdapter : ListAdapter<UserItem, UserAdapter.ViewHolder>(diffUtil) {
+class UserAdapter(private val onClick: (UserItem) -> Unit) : ListAdapter<UserItem, UserAdapter.ViewHolder>(diffUtil) {
 
     inner class ViewHolder(private val binding: ItemUserBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: UserItem) {
+            binding.root.setOnClickListener { onClick(item) }
             binding.nicknameTextView.text = item.username
             binding.descriptionTextView.text = item.description
         }
