@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/userList"
+        android:icon="@drawable/outline_emoji_people_24"
+        android:title="userList" />
+
+    <item
+        android:id="@+id/chatRoomList"
+        android:icon="@drawable/outline_chat_24"
+        android:title="chatRoomList" />
+
+    <item
+        android:id="@+id/myPage"
+        android:icon="@drawable/outline_lab_profile_24"
+        android:title="myPage" />
+
+</menu>

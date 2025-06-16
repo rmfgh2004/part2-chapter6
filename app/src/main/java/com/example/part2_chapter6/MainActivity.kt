@@ -6,14 +6,26 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import com.example.part2_chapter6.chatlist.ChatListFragment
+import com.example.part2_chapter6.databinding.ActivityMainBinding
+import com.example.part2_chapter6.mypage.MyPageFragment
+import com.example.part2_chapter6.userlist.UserFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+    private val userFragment = UserFragment()
+    private val chatListFragment = ChatListFragment()
+    private val myPageFragment = MyPageFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -26,5 +38,35 @@ class MainActivity : AppCompatActivity() {
           startActivity(Intent(this, LoginActivity::class.java))
           finish()
         }
+
+        binding.bottomNavigationView.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.userList -> {
+                    replaceFragment(userFragment)
+                    return@setOnItemSelectedListener true
+                }
+                R.id.chatRoomList -> {
+                    replaceFragment(chatListFragment)
+                    return@setOnItemSelectedListener true
+                }
+                R.id.myPage -> {
+                    replaceFragment(myPageFragment)
+                    return@setOnItemSelectedListener true
+                }
+                else -> {
+                    return@setOnItemSelectedListener false
+                }
+            }
+        }
+
+        replaceFragment(userFragment)
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .apply {
+                replace(R.id.frameLayout, fragment)
+                commit()
+            }
     }
 }
