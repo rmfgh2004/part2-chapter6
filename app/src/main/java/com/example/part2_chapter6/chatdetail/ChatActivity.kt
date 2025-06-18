@@ -74,10 +74,9 @@ class ChatActivity : AppCompatActivity() {
 
                     val chatItem = snapshot.getValue(ChatItem::class.java)
                     chatItem ?: return
-                    Log.wtf("askask", "qqqqq")
 
                     chatItemList.add(chatItem)
-                    chatAdapter.submitList(chatItemList)
+                    chatAdapter.submitList(chatItemList.toMutableList())
                 }
 
                 override fun onChildChanged(
