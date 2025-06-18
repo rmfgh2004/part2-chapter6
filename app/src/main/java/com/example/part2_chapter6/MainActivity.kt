@@ -1,9 +1,16 @@
 package com.example.part2_chapter6
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
@@ -60,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         replaceFragment(userFragment)
+        askNotificationPermission()
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -68,5 +76,40 @@ class MainActivity : AppCompatActivity() {
                 replace(R.id.frameLayout, fragment)
                 commit()
             }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGrant: Boolean ->
+        if (isGrant) {
+
+        } else {
+
+        }
+    }
+
+    private fun askNotificationPermission() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                showPermissionRationalDialog()
+            } else {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun showPermissionRationalDialog() {
+        AlertDialog.Builder(this)
+            .setMessage("if don`t have notification permission, you don`t receive notification")
+            .setPositiveButton("grant") { _, _ ->
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }.setNegativeButton("cancel") { dialog, _ ->
+                dialog.cancel()
+            }.show()
     }
 }

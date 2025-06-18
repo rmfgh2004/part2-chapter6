@@ -12,6 +12,7 @@ import com.example.part2_chapter6.databinding.ActivityLoginBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 
 class LoginActivity : AppCompatActivity() {
 
@@ -68,15 +69,20 @@ class LoginActivity : AppCompatActivity() {
                     if (task.isSuccessful && currentUser != null) {
                         val userId = currentUser.uid
 
-                        val user = mutableMapOf<String, Any>()
-                        user["userId"] = userId
-                        user["username"] = email
+                        Firebase.messaging.token.addOnCompleteListener {
+                            val token = it.result
 
-                        Firebase.database.reference.child(Key.DB_USERS).child(userId).updateChildren(user)
+                            val user = mutableMapOf<String, Any>()
+                            user["userId"] = userId
+                            user["username"] = email
+                            user["fcmToken"] = token
 
-                        Toast.makeText(this, "SignIn Success", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
+                            Firebase.database.reference.child(Key.DB_USERS).child(userId).updateChildren(user)
+
+                            Toast.makeText(this, "SignIn Success", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }
                     } else {
                         Log.wtf("MainActivity", task.exception.toString())
                         Toast.makeText(this, "SignIn Error", Toast.LENGTH_SHORT).show()
